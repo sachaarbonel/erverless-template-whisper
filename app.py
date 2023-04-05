@@ -29,7 +29,8 @@ def inference(model_inputs:dict) -> dict:
     
     # Run the model
     result = model.transcribe("input.mp3",word_timestamps=True)
-    output = {"srt": write_srt(result["segments"])}
+    words = [write_srt(segment["words"]) for segment in result["segments"]]
+    output = {"srt": write_srt(result["segments"]),"words": words}
     os.remove("input.mp3")
     # Return the results as a dictionary
     return output
