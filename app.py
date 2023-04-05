@@ -29,8 +29,7 @@ def inference(model_inputs:dict) -> dict:
     
     # Run the model
     result = model.transcribe("input.mp3",word_timestamps=True)
-    words = [write_srt(segment["words"]) for segment in result["segments"]]
-    output = {"srt": write_srt(result["segments"]),"words": words}
+    output = {"srt": write_srt(result["segments"]), "words": write_words_srt(result["segments"])}
     os.remove("input.mp3")
     # Return the results as a dictionary
     return output
@@ -44,4 +43,16 @@ def write_srt(transcript):
         result += f"{format_timestamp(segment['end'], always_include_hours=True, decimal_marker=',')}\n"
         result += f"{segment['text'].strip().replace('-->', '->')}\n"
         result += "\n"
+    return result
+
+# every segment in result["segments"] has result["words"] which is the same format as result["segments"]
+def write_words_srt(transcript):
+    result = ""
+    for i, segment in enumerate(transcript, start=1):
+       for j, word in enumerate(segment, start=1):
+            result += f"{j}\n"
+            result += f"{format_timestamp(word['start'], always_include_hours=True, decimal_marker=',')} --> "
+            result += f"{format_timestamp(word['end'], always_include_hours=True, decimal_marker=',')}\n"
+            result += f"{word['text'].strip().replace('-->', '->')}\n"
+            result += "\n"
     return result
