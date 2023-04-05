@@ -49,10 +49,10 @@ def write_srt(transcript):
 def write_words_srt(transcript):
     result = ""
     for i, segment in enumerate(transcript, start=1):
-       for j, word in enumerate(segment, start=1):
+       for j, timing in enumerate(segment["words"], start=1):
             result += f"{j}\n"
-            result += f"{format_timestamp(word['start'], always_include_hours=True, decimal_marker=',')} --> "
-            result += f"{format_timestamp(word['end'], always_include_hours=True, decimal_marker=',')}\n"
-            result += f"{word['text'].strip().replace('-->', '->')}\n"
+            result += f"{format_timestamp(timing['start'], always_include_hours=True, decimal_marker=',')} --> "
+            result += f"{format_timestamp(timing['end'], always_include_hours=True, decimal_marker=',')}\n"
+            result += f"{timing['word']}\n"
             result += "\n"
     return result
